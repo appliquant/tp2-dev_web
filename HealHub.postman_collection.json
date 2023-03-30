@@ -1,0 +1,2257 @@
+{
+	"info": {
+		"_postman_id": "f8e785a9-026c-4d90-9694-b76bce5ac99c",
+		"name": "HealHub",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2729035"
+	},
+	"item": [
+		{
+			"name": "CRUD medecin",
+			"item": [
+				{
+					"name": "medecins",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.eql('application/json; charset=utf-8');\r",
+									"})\r",
+									"\r",
+									"//récupération des données au format json\r",
+									"const medecins = pm.response.json();\r",
+									"\r",
+									"// Chargement du schéma de données JSON à partir de l'environnement.\r",
+									"const jsonSchemaArrMedecins = JSON.parse(pm.collectionVariables.get(\"jsonSchemaArrMedecins\"));\r",
+									"\r",
+									"// Validation selon le schéma de données JSON.\r",
+									"pm.test(\"JSON respecte le schéma pour un médecin\", () => {\r",
+									"    pm.response.to.have.jsonSchema(jsonSchemaArrMedecins);\r",
+									"\r",
+									"})\r",
+									"\r",
+									"pm.test(\"JSON est retourné est un vecteur\", function () {\r",
+									"  pm.expect(medecins).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"const nb_medecins = parseInt(pm.collectionVariables.get(\"nb_medecins\"));\r",
+									"\r",
+									"pm.test(\"Nb. medecins retourne\", () =>{\r",
+									"    pm.expect(medecins.length).to.equal(nb_medecins);\r",
+									"})\r",
+									"\r",
+									"if(medecins.length == nb_medecins){\r",
+									"    pm.test(\"Test premier médecin est Mike\", () =>{\r",
+									"            pm.expect(medecins[0].prenom).to.equal(\"Mike\");\r",
+									"            pm.expect(medecins[0]._id).to.equal(\"63ffb221723c8e36189d7fbd\");\r",
+									"    })\r",
+									"}\r",
+									"\r",
+									"console.log(medecins[nb_medecins-1]);\r",
+									"if(medecins.length == nb_medecins){\r",
+									"    pm.test(\"Test dernier médecin est LuLu\", () =>{\r",
+									"            pm.expect(medecins[nb_medecins-1].prenom).to.equal(\"Lulu\");\r",
+									"            pm.expect(medecins[nb_medecins-1]._id).to.equal(\"63ffb2a1ffde1a368763cf44\");\r",
+									"    })\r",
+									"}\r",
+									"    \r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/medecins",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"medecins"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "medecins",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.eql('application/json; charset=utf-8');\r",
+									"});\r",
+									"\r",
+									"//récupération des données au format json\r",
+									"const medecin = pm.response.json();\r",
+									"\r",
+									"// Chargement du schéma de données JSON à partir de l'environnement.\r",
+									"const jsonSchemaMedecin = JSON.parse(pm.collectionVariables.get(\"jsonSchemaMedecin\"));\r",
+									"\r",
+									"// Validation selon le schéma de données JSON.\r",
+									"pm.test(\"JSON respecte le schéma pour un médecin\", () => {\r",
+									"    pm.response.to.have.jsonSchema(jsonSchemaMedecin);\r",
+									"\r",
+									"});\r",
+									"\r",
+									"// Test : l'objet possède bien toutes les propriétés\r",
+									"pm.test(\"L'objet possède toutes les propriétés\", () => {\r",
+									"    pm.expect(medecin).to.be.an(\"object\").that.has.all.keys(\"nom\",\"prenom\",\"courriel\",\"telephone\",\"specialite\", \"_id\",\"createdAt\", \"updatedAt\", \"__v\");\r",
+									"});\r",
+									"\r",
+									"//Test : l'objet n'a pas de propriété supplémentaires\r",
+									"pm.test(\"Pas de propriétés supplémentaires\", () =>{\r",
+									"  \r",
+									"    pm.expect( Object.keys(medecin).length).to.be.equal(Object.keys(jsonSchemaMedecin.properties).length + 1);\r",
+									"});\r",
+									"\r",
+									"//Test : l'objet correspond à celui envoyé\r",
+									"pm.test(\"L'objet retourné est bien l'objet envoyé\", () =>{\r",
+									"    const medecinEnvoye = JSON.parse(pm.request.body.raw);\r",
+									"    //nom\r",
+									"    pm.expect(medecin.nom).to.be.equal(medecinEnvoye.nom);\r",
+									"\r",
+									"    //prenom\r",
+									"    pm.expect(medecin.prenom).to.be.equal(medecinEnvoye.prenom);\r",
+									"\r",
+									"    //courriel\r",
+									"    pm.expect(medecin.courriel).to.be.equal(medecinEnvoye.courriel);\r",
+									"\r",
+									"    //telephone\r",
+									"    pm.expect(medecin.telephone).to.be.equal(medecinEnvoye.telephone);\r",
+									"\r",
+									"    //specialite\r",
+									"    pm.expect(medecin.specialite).to.be.equal(medecinEnvoye.specialite);\r",
+									"\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Location contient l'URI pour l'accès à l'objet\", () => {\r",
+									"    pm.response.to.have.header(\"Location\");\r",
+									"    pm.response.to.be.header(\"Location\", \"/medecins/\" + medecin._id);\r",
+									"})\r",
+									"\r",
+									"// Modification des variables de collection\r",
+									"pm.collectionVariables.set(\"id_last_medecin_created\", medecin._id.toString());\r",
+									"pm.collectionVariables.set(\"last_medecin_created\", JSON.stringify(medecin));\r",
+									"\r",
+									"const nbMedecins = parseInt(pm.collectionVariables.get(\"nb_medecins\")) + 1;\r",
+									"pm.collectionVariables.set(\"nb_medecins\", nbMedecins);\r",
+									"\r",
+									"const nbMedecinsCardiologue = parseInt(pm.collectionVariables.get(\"nb_medecins_cardiologue\")) + 1;\r",
+									"pm.collectionVariables.set(\"nb_medecins_cardiologue\", nbMedecinsCardiologue);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nom\" : \"{{$randomLastName}}\",\r\n    \"prenom\": \"{{$randomFirstName}}\",\r\n    \"courriel\" : \"{{$randomEmail}}\",\r\n    \"telephone\" : \"{{$randomPhoneNumber}}\",\r\n    \"specialite\" : \"Cardiologue\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/medecins",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"medecins"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "medecins specialite filter Cardiologue",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.eql('application/json; charset=utf-8');\r",
+									"})\r",
+									"\r",
+									"\r",
+									"//récupération des données au format json\r",
+									"const medecins = pm.response.json();\r",
+									"\r",
+									"\r",
+									"// Chargement du schéma de données JSON à partir de l'environnement.\r",
+									"const jsonSchemaArrMedecins = JSON.parse(pm.collectionVariables.get(\"jsonSchemaArrMedecins\"));\r",
+									"\r",
+									"// Validation selon le schéma de données JSON.\r",
+									"pm.test(\"JSON respecte le schéma pour un médecin\", () => {\r",
+									"    pm.response.to.have.jsonSchema(jsonSchemaArrMedecins);\r",
+									"\r",
+									"})\r",
+									"\r",
+									"pm.test(\"JSON est retourné est un vecteur\", function () {\r",
+									"  pm.expect(medecins).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"const nb_medecins_cardiologue  = parseInt(pm.collectionVariables.get(\"nb_medecins_cardiologue\"));\r",
+									"\r",
+									"pm.test(\"Nb. medecins retourné\", () =>{\r",
+									"    pm.expect(medecins.length).to.equal(nb_medecins_cardiologue);\r",
+									"})\r",
+									"\r",
+									"if(medecins.length == nb_medecins_cardiologue){\r",
+									"    pm.test(\"Valeur du json sont les bonnes\", ()=> {\r",
+									"        const last_medecin_created = JSON.parse(pm.collectionVariables.get(\"last_medecin_created\"))\r",
+									"        \r",
+									"        //id\r",
+									"        pm.expect(medecins[medecins.length-1]._id).to.be.equal(last_medecin_created._id);\r",
+									"\r",
+									"        //nom\r",
+									"        pm.expect(medecins[medecins.length-1].nom).to.be.equal(last_medecin_created.nom);\r",
+									"\r",
+									"        //prenom\r",
+									"        pm.expect(medecins[medecins.length-1].prenom).to.be.equal(last_medecin_created.prenom);\r",
+									"\r",
+									"        //courriel\r",
+									"        pm.expect(medecins[medecins.length-1].courriel).to.be.equal(last_medecin_created.courriel);\r",
+									"\r",
+									"        //telephone\r",
+									"        pm.expect(medecins[medecins.length-1].telephone).to.be.equal(last_medecin_created.telephone);\r",
+									"\r",
+									"        //specialite\r",
+									"        pm.expect(medecins[medecins.length-1].specialite).to.be.equal(last_medecin_created.specialite);\r",
+									"    })\r",
+									"}\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/medecins?specialite=Cardiologue",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"medecins"
+							],
+							"query": [
+								{
+									"key": "specialite",
+									"value": "Cardiologue"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "medecins/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Test code dee retour\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//Test header\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.eql('application/json; charset=utf-8');\r",
+									"});\r",
+									"\r",
+									"//récupération des données au format json\r",
+									"const medecin = pm.response.json();\r",
+									"\r",
+									"// Chargement du schéma de données JSON à partir de l'environnement.\r",
+									"const jsonSchemaMedecin = JSON.parse(pm.collectionVariables.get(\"jsonSchemaMedecin\"));\r",
+									"\r",
+									"//Test :  Validation selon le schéma de données JSON.\r",
+									"pm.test(\"JSON respecte le schéma pour un médecin\", () => {\r",
+									"    pm.response.to.have.jsonSchema(jsonSchemaMedecin);\r",
+									"\r",
+									"});\r",
+									"\r",
+									"//Test : Vérifie si les données retournées sont les bonnes\r",
+									"pm.test(\"JSON contient les bonnes valeurs\", () =>{\r",
+									"    const last_medecin_created = JSON.parse(pm.collectionVariables.get(\"last_medecin_created\"))\r",
+									"\r",
+									"    //id\r",
+									"    pm.expect(medecin._id).to.be.equal(last_medecin_created._id);\r",
+									"\r",
+									"    //nom\r",
+									"    pm.expect(medecin.nom).to.be.equal(last_medecin_created.nom);\r",
+									"\r",
+									"    //prenom\r",
+									"    pm.expect(medecin.prenom).to.be.equal(last_medecin_created.prenom);\r",
+									"\r",
+									"     //courriel\r",
+									"    pm.expect(medecin.courriel).to.be.equal(last_medecin_created.courriel);\r",
+									"\r",
+									"     //telephone\r",
+									"    pm.expect(medecin.telephone).to.be.equal(last_medecin_created.telephone);\r",
+									"\r",
+									"     //specialite\r",
+									"    pm.expect(medecin.specialite).to.be.equal(last_medecin_created.specialite);\r",
+									"})\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/medecins/:id",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"medecins",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{id_last_medecin_created}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "medecins/:id  (inexistant)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Test code de retour\r",
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/medecins/:id",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"medecins",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{bad_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "medecins/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.eql('application/json; charset=utf-8');\r",
+									"});\r",
+									"\r",
+									"//récupération des données au format json\r",
+									"const medecin = pm.response.json();\r",
+									"\r",
+									"// Chargement du schéma de données JSON à partir de l'environnement.\r",
+									"const jsonSchemaMedecin = JSON.parse(pm.collectionVariables.get(\"jsonSchemaMedecin\"));\r",
+									"\r",
+									"// Validation selon le schéma de données JSON.\r",
+									"pm.test(\"JSON respecte le schéma pour un médecin\", () => {\r",
+									"    pm.response.to.have.jsonSchema(jsonSchemaMedecin);\r",
+									"\r",
+									"});\r",
+									"\r",
+									"// Test : l'objet possède bien toutes les propriétés\r",
+									"pm.test(\"L'objet possède toutes les propriétés\", () => {\r",
+									"    pm.expect(medecin).to.be.an(\"object\").that.has.all.keys(\"nom\",\"prenom\",\"courriel\",\"telephone\",\"specialite\", \"_id\",\"createdAt\", \"updatedAt\", \"__v\");\r",
+									"});\r",
+									"\r",
+									"//Test : l'objet n'a pas de propriété supplémentaires\r",
+									"pm.test(\"Pas de propriétés supplémentaires\", () =>{\r",
+									"  \r",
+									"    pm.expect( Object.keys(medecin).length).to.be.equal(Object.keys(jsonSchemaMedecin.properties).length + 1);\r",
+									"});\r",
+									"\r",
+									"//Test : l'objet correspond à celui envoyé\r",
+									"pm.test(\"L'objet retourné est bien l'objet envoyé\", () =>{\r",
+									"    const medecinEnvoye = JSON.parse(pm.request.body.raw);\r",
+									"\r",
+									"     //id\r",
+									"    pm.expect(medecin._id).to.be.equal(pm.request.url.path[1]);\r",
+									"\r",
+									"    //nom\r",
+									"    pm.expect(medecin.nom).to.be.equal(medecinEnvoye.nom);\r",
+									"\r",
+									"    //prenom\r",
+									"    pm.expect(medecin.prenom).to.be.equal(medecinEnvoye.prenom);\r",
+									"\r",
+									"    //courriel\r",
+									"    pm.expect(medecin.courriel).to.be.equal(medecinEnvoye.courriel);\r",
+									"\r",
+									"    //telephone\r",
+									"    pm.expect(medecin.telephone).to.be.equal(medecinEnvoye.telephone);\r",
+									"\r",
+									"    //specialite\r",
+									"    pm.expect(medecin.specialite).to.be.equal(medecinEnvoye.specialite);\r",
+									"\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nom\" : \"{{$randomLastName}}\",\r\n    \"prenom\": \"{{$randomFirstName}}\",\r\n    \"courriel\" : \"{{$randomEmail}}\",\r\n    \"telephone\" : \"{{$randomPhoneNumber}}\",\r\n    \"specialite\" : \"Pédiatre\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/medecins/:id",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"medecins",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{id_last_medecin_created}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "medecins/:id (inexistant)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nom\" : \"{{$randomLastName}}\",\r\n    \"prenom\": \"{{$randomFirstName}}\",\r\n    \"courriel\" : \"{{$randomEmail}}\",\r\n    \"telephone\" : \"{{$randomPhoneNumber}}\",\r\n    \"specialite\" : \"Pédiatre\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/medecins/:id",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"medecins",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{bad_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "medecins/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/medecins/:id",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"medecins",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{id_last_medecin_created}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CRUD patient",
+			"item": [
+				{
+					"name": "patients",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.eql('application/json; charset=utf-8');\r",
+									"})\r",
+									"\r",
+									"//récupération des données au format json\r",
+									"const patients = pm.response.json();\r",
+									"\r",
+									"// Chargement du schéma de données JSON à partir de l'environnement.\r",
+									"const jsonSchemaArrPatients = JSON.parse(pm.collectionVariables.get(\"jsonSchemaArrPatients\"));\r",
+									"\r",
+									"// Validation selon le schéma de données JSON.\r",
+									"pm.test(\"JSON respecte le schéma pour un patient\", () => {\r",
+									"    pm.response.to.have.jsonSchema(jsonSchemaArrPatients);\r",
+									"\r",
+									"})\r",
+									"\r",
+									"pm.test(\"JSON est retourné est un vecteur\", function () {\r",
+									"  pm.expect(patients).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"const nb_patients = parseInt(pm.collectionVariables.get(\"nb_patients\"));\r",
+									"\r",
+									"pm.test(\"Nb. patients retournés\", () =>{\r",
+									"    pm.expect(patients.length).to.equal(nb_patients);\r",
+									"})\r",
+									"\r",
+									"if(patients.length == nb_patients){\r",
+									"    pm.test(\"Test premier patient est Mike\", () =>{\r",
+									"            pm.expect(patients[0].prenom).to.equal(\"Lavern\");\r",
+									"            pm.expect(patients[0]._id).to.equal(\"63fff7a252a0bc910ada5584\");\r",
+									"    })\r",
+									"}\r",
+									"\r",
+									"if(patients.length == nb_patients){\r",
+									"    pm.test(\"Test dernier patient est Jesus\", () =>{\r",
+									"            pm.expect(patients[nb_patients-1].prenom).to.equal(\"Jesus\");\r",
+									"            pm.expect(patients[nb_patients-1]._id).to.equal(\"63fffacaad0c9380ed34b904\");\r",
+									"    })\r",
+									"}\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/patients",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"patients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patients",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.eql('application/json; charset=utf-8');\r",
+									"});\r",
+									"\r",
+									"//récupération des données au format json\r",
+									"const patient = pm.response.json();\r",
+									"\r",
+									"// Chargement du schéma de données JSON à partir de l'environnement.\r",
+									"const jsonSchemaPatient = JSON.parse(pm.collectionVariables.get(\"jsonSchemaPatient\"));\r",
+									"\r",
+									"// Validation selon le schéma de données JSON.\r",
+									"pm.test(\"JSON respecte le schéma pour un patient\", () => {\r",
+									"    pm.response.to.have.jsonSchema(jsonSchemaPatient);\r",
+									"\r",
+									"});\r",
+									"\r",
+									"// Test : l'objet possède bien toutes les propriétés\r",
+									"pm.test(\"L'objet possède toutes les propriétés\", () => {\r",
+									"    pm.expect(patient).to.be.an(\"object\").that.has.all.keys(\"nom\",\"prenom\",\"dateNaissance\", \"courriel\",\"telephone\",\"adresse\", \"codePostal\", \"_id\",\"historique\",\"createdAt\", \"updatedAt\", \"__v\");\r",
+									"});\r",
+									"\r",
+									"//Test : l'objet n'a pas de propriété supplémentaires\r",
+									"pm.test(\"Pas de propriétés supplémentaires\", () =>{\r",
+									"   pm.expect( Object.keys(patient).length).to.be.equal(Object.keys(jsonSchemaPatient.properties).length + 1);\r",
+									"});\r",
+									"\r",
+									"//Test : l'objet correspond à celui envoyé\r",
+									"pm.test(\"L'objet retourné est bien l'objet envoyé\", () =>{\r",
+									"    const patientEnvoye = JSON.parse(pm.request.body.raw);\r",
+									"    //nom\r",
+									"    pm.expect(patient.nom).to.be.equal(patientEnvoye.nom);\r",
+									"\r",
+									"    //prenom\r",
+									"    pm.expect(patient.prenom).to.be.equal(patientEnvoye.prenom);\r",
+									"\r",
+									"    //courriel\r",
+									"    pm.expect(patient.courriel).to.be.equal(patientEnvoye.courriel);\r",
+									"\r",
+									"    //telephone\r",
+									"    pm.expect(patient.telephone).to.be.equal(patientEnvoye.telephone);\r",
+									"\r",
+									"    //adresse\r",
+									"    pm.expect(patient.adresse).to.be.equal(patientEnvoye.adresse);\r",
+									"\r",
+									"    //codePostal\r",
+									"    pm.expect(patient.codePostal).to.be.equal(patientEnvoye.codePostal);\r",
+									"\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Location contient l'URI pour l'accès à l'objet\", () => {\r",
+									"    pm.response.to.have.header(\"Location\");\r",
+									"    pm.response.to.be.header(\"Location\", \"/patients/\" + patient._id);\r",
+									"})\r",
+									"\r",
+									"// Modification des variables de collection\r",
+									"pm.collectionVariables.set(\"id_last_patient_created\", patient._id.toString());\r",
+									"pm.collectionVariables.set(\"last_patient_created\", JSON.stringify(patient));\r",
+									"\r",
+									"const nbPatients = parseInt(pm.collectionVariables.get(\"nb_patients\")) + 1;\r",
+									"pm.collectionVariables.set(\"nb_patients\", nbPatients);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nom\" : \"{{$randomLastName}}\",\r\n    \"prenom\": \"{{$randomFirstName}}\",\r\n    \"dateNaissance\": \"1990-06-12\",\r\n    \"courriel\" : \"{{$randomEmail}}\",\r\n    \"telephone\" : \"{{$randomPhoneNumber}}\",\r\n    \"adresse\" : \"{{$randomStreetAddress}}\",\r\n    \"codePostal\" : \"G1S 4S3\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/patients",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"patients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patients/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Test code dee retour\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//Test header\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.eql('application/json; charset=utf-8');\r",
+									"});\r",
+									"\r",
+									"//récupération des données au format json\r",
+									"const patient = pm.response.json();\r",
+									"\r",
+									"// Chargement du schéma de données JSON à partir de l'environnement.\r",
+									"const jsonSchemaPatient = JSON.parse(pm.collectionVariables.get(\"jsonSchemaPatient\"));\r",
+									"\r",
+									"//Test :  Validation selon le schéma de données JSON.\r",
+									"pm.test(\"JSON respecte le schéma pour un patient\", () => {\r",
+									"    pm.response.to.have.jsonSchema(jsonSchemaPatient);\r",
+									"\r",
+									"});\r",
+									"\r",
+									"//Test : Vérifie si les données retournées sont les bonnes\r",
+									"pm.test(\"JSON contient les bonnes valeurs\", () =>{\r",
+									"    const last_patient_created = JSON.parse(pm.collectionVariables.get(\"last_patient_created\"))\r",
+									"\r",
+									"    //id\r",
+									"    pm.expect(patient._id).to.be.equal(last_patient_created._id);\r",
+									"\r",
+									"    //nom\r",
+									"    pm.expect(patient.nom).to.be.equal(last_patient_created.nom);\r",
+									"\r",
+									"    //prenom\r",
+									"    pm.expect(patient.prenom).to.be.equal(last_patient_created.prenom);\r",
+									"\r",
+									"     //courriel\r",
+									"    pm.expect(patient.courriel).to.be.equal(last_patient_created.courriel);\r",
+									"\r",
+									"     //telephone\r",
+									"    pm.expect(patient.telephone).to.be.equal(last_patient_created.telephone);\r",
+									"\r",
+									"     //adresse\r",
+									"    pm.expect(patient.adresse).to.be.equal(last_patient_created.adresse);\r",
+									"\r",
+									"    //codePostal\r",
+									"    pm.expect(patient.codePostal).to.be.equal(last_patient_created.codePostal);\r",
+									"\r",
+									"})\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/patients/:id",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"patients",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{id_last_patient_created}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patients/:id (inexistant)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Test code de retour\r",
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/patients/:id",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"patients",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "63ed3a90fb8c2f63719fc687"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patients/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.eql('application/json; charset=utf-8');\r",
+									"});\r",
+									"\r",
+									"//récupération des données au format json\r",
+									"const patient = pm.response.json();\r",
+									"\r",
+									"// Chargement du schéma de données JSON à partir de l'environnement.\r",
+									"const jsonSchemaPatient = JSON.parse(pm.collectionVariables.get(\"jsonSchemaPatient\"));\r",
+									"\r",
+									"// Validation selon le schéma de données JSON.\r",
+									"pm.test(\"JSON respecte le schéma pour un patient\", () => {\r",
+									"    pm.response.to.have.jsonSchema(jsonSchemaPatient);\r",
+									"\r",
+									"});\r",
+									"\r",
+									"// Test : l'objet possède bien toutes les propriétés\r",
+									"pm.test(\"L'objet possède toutes les propriétés\", () => {\r",
+									"    pm.expect(patient).to.be.an(\"object\").that.has.all.keys(\"nom\",\"prenom\", \"dateNaissance\", \"courriel\",\"telephone\",\"adresse\", \"codePostal\",\"historique\", \"_id\",\"createdAt\", \"updatedAt\", \"__v\");\r",
+									"});\r",
+									"\r",
+									"//Test : l'objet n'a pas de propriété supplémentaires\r",
+									"pm.test(\"Pas de propriétés supplémentaires\", () =>{\r",
+									"  \r",
+									"    pm.expect( Object.keys(patient).length).to.be.equal(Object.keys(jsonSchemaPatient.properties).length + 1);\r",
+									"});\r",
+									"\r",
+									"//Test : l'objet correspond à celui envoyé\r",
+									"pm.test(\"L'objet retourné est bien l'objet envoyé\", () =>{\r",
+									"    const patientEnvoye = JSON.parse(pm.request.body.raw);\r",
+									"\r",
+									"     //id\r",
+									"    pm.expect(patient._id).to.be.equal(pm.request.url.path[1]);\r",
+									"\r",
+									"    //nom\r",
+									"    pm.expect(patient.nom).to.be.equal(patientEnvoye.nom);\r",
+									"\r",
+									"    //prenom\r",
+									"    pm.expect(patient.prenom).to.be.equal(patientEnvoye.prenom);\r",
+									"\r",
+									"    //courriel\r",
+									"    pm.expect(patient.courriel).to.be.equal(patientEnvoye.courriel);\r",
+									"\r",
+									"    //telephone\r",
+									"    pm.expect(patient.telephone).to.be.equal(patientEnvoye.telephone);\r",
+									"\r",
+									"    //adresse\r",
+									"    pm.expect(patient.adresse).to.be.equal(patientEnvoye.adresse);\r",
+									"\r",
+									"    //codePostal\r",
+									"    pm.expect(patient.codePostal).to.be.equal(patientEnvoye.codePostal);\r",
+									"\r",
+									"\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nom\" : \"{{$randomLastName}}\",\r\n    \"prenom\": \"{{$randomFirstName}}\",\r\n    \"dateNaissance\": \"2000-03-06\",\r\n    \"courriel\" : \"{{$randomEmail}}\",\r\n    \"telephone\" : \"{{$randomPhoneNumber}}\",\r\n    \"adresse\" : \"{{$randomStreetAddress}}\",\r\n    \"codePostal\" : \"G1W 2W1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/patients/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"patients",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{id_last_patient_created}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patients/:id (inexistant)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nom\" : \"{{$randomLastName}}\",\r\n    \"prenom\": \"{{$randomFirstName}}\",\r\n    \"courriel\" : \"{{$randomEmail}}\",\r\n    \"telephone\" : \"{{$randomPhoneNumber}}\",\r\n    \"adresse\" : \"{{$randomStreetAddress}}\",\r\n    \"codePostal\" : \"G1W 2W1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/patients/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"patients",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{bad_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patients/:id/historique",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.eql('application/json; charset=utf-8');\r",
+									"});\r",
+									"\r",
+									"//récupération des données au format json\r",
+									"const patient = pm.response.json();\r",
+									"\r",
+									"// Chargement du schéma de données JSON à partir de l'environnement.\r",
+									"const jsonSchemaPatient = JSON.parse(pm.collectionVariables.get(\"jsonSchemaPatient\"));\r",
+									"\r",
+									"// Validation selon le schéma de données JSON.\r",
+									"pm.test(\"JSON respecte le schéma pour un patient\", () => {\r",
+									"    pm.response.to.have.jsonSchema(jsonSchemaPatient);\r",
+									"\r",
+									"});\r",
+									"console.log(patient.historique.length);\r",
+									"pm.test(\"Patient devrait avoir 1 historique\", () =>{\r",
+									"    pm.expect(patient.historique.length).to.be.equal(1);\r",
+									"})\r",
+									"\r",
+									"if(patient.historique.length > 0){\r",
+									"     pm.test(\"L'objet historique possède toutes les propriétés\", () => {\r",
+									"        console.log(patient.historique[0]);\r",
+									"        pm.expect(patient.historique[0]).to.be.an(\"object\").that.has.all.keys(\"information\",\"medecinId\", \"created_at\", \"_id\");\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Chargement du schéma de données JSON à partir de l'environnement.\r",
+									"const jsonSchemaHistorique = JSON.parse(pm.collectionVariables.get(\"jsonSchemaHistorique\"));\r",
+									"\r",
+									"//Test : l'objet n'a pas de propriété supplémentaires\r",
+									"pm.test(\"Pas de propriétés supplémentaires\", () =>{\r",
+									"   pm.expect( Object.keys(patient).length).to.be.equal(Object.keys(jsonSchemaPatient.properties).length + 1);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Location contient l'URI pour l'accès à l'objet\", () => {\r",
+									"    pm.response.to.have.header(\"Location\");\r",
+									"    pm.response.to.be.header(\"Location\", \"/patients/\" + patient._id);\r",
+									"})\r",
+									"   \r",
+									"pm.collectionVariables.set(\"id_last_historique_created\", patient.historique[0]._id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"medecinId\" : \"{{id_last_medecin_created}}\",\r\n    \"information\" : \"Mal de dos, prescription anti-infamatoires 200mg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/patients/:id/historique",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"patients",
+								":id",
+								"historique"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{id_last_patient_created}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patients/:id/historique/:id_historique (patient inexistant)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"medecinId\" : \"{{id_last_medecin_created}}\",\r\n    \"information\" : \"Mal de dos, prescription anti-infamatoires 200mg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/patients/:id/historique/:id_historique",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"patients",
+								":id",
+								"historique",
+								":id_historique"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{bad_id}}"
+								},
+								{
+									"key": "id_historique",
+									"value": "{{id_last_historique_created}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patients/:id/historique/:id_historique",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"medecinId\" : \"{{id_last_medecin_created}}\",\r\n    \"information\" : \"Mal de dos, prescription anti-infamatoires 200mg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/patients/:id/historique/:id_historique",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"patients",
+								":id",
+								"historique",
+								":id_historique"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{id_last_patient_created}}"
+								},
+								{
+									"key": "id_historique",
+									"value": "{{id_last_historique_created}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patient/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/patients/:id",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"patients",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{id_last_patient_created}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CRUD rendezvous",
+			"item": [
+				{
+					"name": "rendezvous",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.eql('application/json; charset=utf-8');\r",
+									"});\r",
+									"\r",
+									"//récupération des données au format json\r",
+									"const rendezVous = pm.response.json();\r",
+									"\r",
+									"// Chargement du schéma de données JSON à partir de l'environnement.\r",
+									"const jsonSchemaRendezVous = JSON.parse(pm.collectionVariables.get(\"jsonSchemaRendezVous\"));\r",
+									"\r",
+									"// Validation selon le schéma de données JSON.\r",
+									"pm.test(\"JSON respecte le schéma pour un rendez-vous\", () => {\r",
+									"    pm.response.to.have.jsonSchema(jsonSchemaRendezVous);\r",
+									"\r",
+									"});\r",
+									"\r",
+									"// Test : l'objet possède bien toutes les propriétés\r",
+									"pm.test(\"L'objet possède toutes les propriétés\", () => {\r",
+									"    pm.expect(rendezVous).to.be.an(\"object\").that.has.all.keys(\"patientId\",\"medecinId\",\"debut\",\"fin\",\"notes\", \"_id\",\"createdAt\", \"updatedAt\", \"__v\");\r",
+									"});\r",
+									"\r",
+									"//Test : l'objet n'a pas de propriété supplémentaires\r",
+									"pm.test(\"Pas de propriétés supplémentaires\", () =>{\r",
+									"   pm.expect( Object.keys(rendezVous).length).to.be.equal(Object.keys(jsonSchemaRendezVous.properties).length + 1);\r",
+									"});\r",
+									"\r",
+									"//Test : l'objet correspond à celui envoyé\r",
+									"pm.test(\"L'objet retourné est bien l'objet envoyé\", () =>{\r",
+									"    const rendezVousEnvoye = JSON.parse(pm.request.body.raw);\r",
+									"    \r",
+									"    //medecin\r",
+									"    \r",
+									"    pm.expect(rendezVous.medecinId).to.be.equal(rendezVousEnvoye.medecinId);\r",
+									"\r",
+									"    //patient\r",
+									"    pm.expect(rendezVous.patientId).to.be.equal(rendezVousEnvoye.patientId);\r",
+									"\r",
+									"    //debut\r",
+									"    pm.expect(Date.parse(rendezVous.debut)).to.be.equal(Date.parse(rendezVousEnvoye.debut));\r",
+									"    \r",
+									"    //fin\r",
+									"    const debut = new Date(rendezVous.debut)\r",
+									"    const fin = debut;\r",
+									"    fin.setMinutes(fin.getMinutes() + pm.collectionVariables.get(\"duree_rendez_vous\"));\r",
+									"\r",
+									"    pm.expect(Date.parse(new Date(rendezVous.fin))).to.be.equal(Date.parse(fin));\r",
+									"\r",
+									"\r",
+									"    //notes\r",
+									"    pm.expect(rendezVous.notes).to.be.equal(rendezVousEnvoye.notes);\r",
+									"\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Location contient l'URI pour l'accès à l'objet\", () => {\r",
+									"    pm.response.to.have.header(\"Location\");\r",
+									"    pm.response.to.be.header(\"Location\", \"/rendezvous/\" + rendezVous._id);\r",
+									"})\r",
+									"\r",
+									"\r",
+									"// Modification des variables de collection\r",
+									"pm.collectionVariables.set(\"id_last_rendez_vous_created\", rendezVous._id.toString());\r",
+									"pm.collectionVariables.set(\"last_rendez_vous_created\", JSON.stringify(rendezVous));\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"medecinId\" : \"{{id_last_medecin_created}}\",\r\n    \"patientId\": \"{{id_last_patient_created}}\",\r\n    \"debut\" : \"{{rendez_vous_date_debut}} {{rendez_vous_heure_debut}}\",\r\n    \"notes\" : \"Fièvre et toux\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/rendezvous",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"rendezvous"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rendezvous (conflit debut)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"medecinId\" : \"{{id_last_medecin_created}}\",\r\n    \"patientId\": \"{{id_last_patient_created}}\",\r\n    \"debut\" : \"{{rendez_vous_date_debut}} {{rendez_vous_heure_debut_conflit}}\",\r\n    \"notes\" : \"Fièvre et toux\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/rendezvous",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"rendezvous"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rendezvous (conflit fin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"medecinId\" : \"{{id_last_medecin_created}}\",\r\n    \"patientId\": \"{{id_last_patient_created}}\",\r\n    \"debut\" : \"{{rendez_vous_date_debut}} {{rendez_vous_heure_fin_conflit}}\",\r\n    \"notes\" : \"Fièvre et toux\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/rendezvous",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"rendezvous"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rendezvous/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.eql('application/json; charset=utf-8');\r",
+									"})\r",
+									"\r",
+									"//récupération des données au format json\r",
+									"const rendezVous = pm.response.json();\r",
+									"\r",
+									"// Chargement du schéma de données JSON à partir de l'environnement.\r",
+									"const jsonSchemaRendezVous = JSON.parse(pm.collectionVariables.get(\"jsonSchemaRendezVous\"));\r",
+									"\r",
+									"// Validation selon le schéma de données JSON.\r",
+									"pm.test(\"JSON respecte le schéma pour un rendez-vous\", () => {\r",
+									"    pm.response.to.have.jsonSchema(jsonSchemaRendezVous);\r",
+									"\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//Test : Vérifie si les données retournées sont les bonnes\r",
+									"pm.test(\"JSON contient les bonnes valeurs\", () =>{\r",
+									"    const last_rendez_vous_created = JSON.parse(pm.collectionVariables.get(\"last_rendez_vous_created\"))\r",
+									"\r",
+									"/*\r",
+									"    //id\r",
+									"    pm.expect(rendezVous._id).to.be.equal(last_rendez_vous_created._id);\r",
+									"\r",
+									"    //medecinId\r",
+									"    pm.expect(rendezVous.medecinId).to.be.equal(last_rendez_vous_created.medecinId);\r",
+									"\r",
+									"    //patientId\r",
+									"    pm.expect(rendezVous.patientId).to.be.equal(last_rendez_vous_created.patientId);\r",
+									"\r",
+									"     //debut\r",
+									"    pm.expect(rendezVous.debut).to.be.equal(last_patient_created.debut);\r",
+									"\r",
+									"     //telephone\r",
+									"    pm.expect(rendezVous.fin).to.be.equal(last_patient_created.fin);\r",
+									"\r",
+									"     //adresse\r",
+									"    pm.expect(rendezVous.notes).to.be.equal(last_patient_created.notes);\r",
+									"\r",
+									"   \r",
+									"*/\r",
+									"})\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/rendezvous/:id",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"rendezvous",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{id_last_rendez_vous_created}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rendezvous/:id (inexistant)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/rendezvous/:id",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"rendezvous",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{bad_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rendezvous/medecins/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.eql('application/json; charset=utf-8');\r",
+									"})\r",
+									"\r",
+									"//récupération des données au format json\r",
+									"const rendezVous = pm.response.json();\r",
+									"\r",
+									"\r",
+									"// Chargement du schéma de données JSON à partir de l'environnement.\r",
+									"const jsonSchemaArrRendezVous= JSON.parse(pm.collectionVariables.get(\"jsonSchemaArrRendezVous\"));\r",
+									"\r",
+									"\r",
+									"\r",
+									"// Validation selon le schéma de données JSON.\r",
+									"pm.test(\"JSON respecte le schéma pour une liste de rendez-vous\", () => {\r",
+									"    pm.response.to.have.jsonSchema(jsonSchemaArrRendezVous);\r",
+									"\r",
+									"})\r",
+									"\r",
+									"pm.test(\"JSON est retourné est un vecteur\", function () {\r",
+									"  pm.expect(rendezVous).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"const nb_rendez_vous = parseInt(pm.collectionVariables.get(\"nb_rendez_vous_medecin\"));\r",
+									"\r",
+									"pm.test(\"Nb. rendez-vous retournés\", () =>{\r",
+									"    pm.expect(rendezVous.length).to.equal(nb_rendez_vous);\r",
+									"})\r",
+									"\r",
+									"if(rendezVous.length == nb_rendez_vous){\r",
+									"    pm.test(\"Test premier rendez-vous\", () =>{\r",
+									"            pm.expect(rendezVous[0].medecinId).to.equal(\"63ffb2a1ffde1a368763cf44\");\r",
+									"            pm.expect(rendezVous[0].patientId).to.equal(\"63fff7dcc9c0242b93854896\");\r",
+									"            pm.expect(rendezVous[0]._id).to.equal(\"64000ba05b29b34292a4ce3b\"); \r",
+									"    })\r",
+									"}\r",
+									"\r",
+									"if(rendezVous.length == nb_rendez_vous){\r",
+									"    pm.test(\"Test dernier rendez-vous\", () =>{\r",
+									"            pm.expect(rendezVous[nb_rendez_vous-1].medecinId).to.equal(\"63ffb2a1ffde1a368763cf44\");\r",
+									"            pm.expect(rendezVous[nb_rendez_vous-1].patientId).to.equal(\"63fff7dcc9c0242b93854896\");\r",
+									"            pm.expect(rendezVous[nb_rendez_vous-1]._id).to.equal(\"64000bb685d1a277da6cb25a\"); \r",
+									"    })\r",
+									"}\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/rendezvous/medecins/:id",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"rendezvous",
+								"medecins",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "63ffb2a1ffde1a368763cf44"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rendezvous/medecins/:id (medecin inexistant)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/rendezvous/medecins/:id",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"rendezvous",
+								"medecins",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{bad_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rendezvous/medecin/:id?date",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.eql('application/json; charset=utf-8');\r",
+									"})\r",
+									"\r",
+									"//récupération des données au format json\r",
+									"const rendezVous = pm.response.json();\r",
+									"\r",
+									"\r",
+									"// Chargement du schéma de données JSON à partir de l'environnement.\r",
+									"const jsonSchemaArrRendezVous= JSON.parse(pm.collectionVariables.get(\"jsonSchemaArrRendezVous\"));\r",
+									"\r",
+									"\r",
+									"\r",
+									"// Validation selon le schéma de données JSON.\r",
+									"pm.test(\"JSON respecte le schéma pour une liste de rendez-vous\", () => {\r",
+									"    pm.response.to.have.jsonSchema(jsonSchemaArrRendezVous);\r",
+									"\r",
+									"})\r",
+									"\r",
+									"pm.test(\"JSON est retourné est un vecteur\", function () {\r",
+									"  pm.expect(rendezVous).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Nb. rendez-vous retournés\", () =>{\r",
+									"    pm.expect(rendezVous.length).to.equal(parseInt(pm.collectionVariables.get(\"nb_rendez_vous_medecin_date\")));\r",
+									"})\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/rendezvous/medecins/:id?date={{rendez_vous_date_debut}}",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"rendezvous",
+								"medecins",
+								":id"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "{{rendez_vous_date_debut}}"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{id_last_medecin_created}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rendezvous/patients/:id?date",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.eql('application/json; charset=utf-8');\r",
+									"})\r",
+									"\r",
+									"//récupération des données au format json\r",
+									"const rendezVous = pm.response.json();\r",
+									"\r",
+									"\r",
+									"// Chargement du schéma de données JSON à partir de l'environnement.\r",
+									"const jsonSchemaArrRendezVous= JSON.parse(pm.collectionVariables.get(\"jsonSchemaArrRendezVous\"));\r",
+									"\r",
+									"\r",
+									"\r",
+									"// Validation selon le schéma de données JSON.\r",
+									"pm.test(\"JSON respecte le schéma pour une liste de rendez-vous\", () => {\r",
+									"    pm.response.to.have.jsonSchema(jsonSchemaArrRendezVous);\r",
+									"\r",
+									"})\r",
+									"\r",
+									"pm.test(\"JSON est retourné est un vecteur\", function () {\r",
+									"  pm.expect(rendezVous).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Nb. rendez-vous retournés\", () =>{\r",
+									"    pm.expect(rendezVous.length).to.equal(parseInt(pm.collectionVariables.get(\"nb_rendez_vous_patient_date\")));\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/rendezvous/patients/:id?date={{rendez_vous_date_debut}}",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"rendezvous",
+								"patients",
+								":id"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "{{rendez_vous_date_debut}}"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{id_last_patient_created}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rendezvous/patients/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.eql('application/json; charset=utf-8');\r",
+									"})\r",
+									"\r",
+									"//récupération des données au format json\r",
+									"const rendezVous = pm.response.json();\r",
+									"\r",
+									"\r",
+									"// Chargement du schéma de données JSON à partir de l'environnement.\r",
+									"const jsonSchemaArrRendezVous= JSON.parse(pm.collectionVariables.get(\"jsonSchemaArrRendezVous\"));\r",
+									"\r",
+									"\r",
+									"\r",
+									"// Validation selon le schéma de données JSON.\r",
+									"pm.test(\"JSON respecte le schéma pour une liste de rendez-vous\", () => {\r",
+									"    pm.response.to.have.jsonSchema(jsonSchemaArrRendezVous);\r",
+									"\r",
+									"})\r",
+									"\r",
+									"pm.test(\"JSON est retourné est un vecteur\", function () {\r",
+									"  pm.expect(rendezVous).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Nb. rendez-vous retournés\", () =>{\r",
+									"    console.log(rendezVous.length);\r",
+									"    console.log(pm.collectionVariables.get(\"nb_rendez_vous\"))\r",
+									"    \r",
+									"    pm.expect(rendezVous.length).to.equal(parseInt(pm.collectionVariables.get(\"nb_rendez_vous_patient\")));\r",
+									"})\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/rendezvous/patients/:id",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"rendezvous",
+								"patients",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{id_last_patient_created}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rendezvous/patients/:id (patient inexistant)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/rendezvous/patients/:id",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"rendezvous",
+								"patients",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{bad_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rendezvous/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/rendezvous/:id",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"rendezvous",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{id_last_rendez_vous_created}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Seed",
+			"item": [
+				{
+					"name": "db/seed",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//Pour enregistrer les valeurs initiales\r",
+									"//pm.collectionVariables.set(\"reset_values\",pm.collectionVariables.toJSON().values)\r",
+									"\r",
+									"pm.collectionVariables.get(\"reset_values\").forEach((a)=>{\r",
+									"    if(a.key != \"reset_values\" ){\r",
+									"          pm.collectionVariables.set(a.key,a.value)}\r",
+									"    }\r",
+									"  \r",
+									");\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/db/seed",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"db",
+								"seed"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "jsonSchemaMedecin",
+			"value": "{\n        \"type\" : \"object\",\n        \"properties\" : {\n            \"_id\" : {\n                \"type\": \"string\"\n            },\n            \"nom\" : {\n                \"type\": \"string\"\n            },\n            \"prenom\" : {\n                \"type\": \"string\"\n            },\n            \"telephone\" : {\n                \"type\": \"string\"\n            },\n            \"courriel\" : {\n                \"type\": \"string\"\n            },  \n            \"specialite\" : {\n                \"type\": \"string\"\n            },\n            \"createdAt\": {\n                \"type\": \"string\"\n            },\n            \"updatedAt\": {\n            \"type\": \"string\"\n            }            \n        },\n        \"required\" : [\"_id\", \"nom\", \"prenom\", \"telephone\", \"courriel\", \"specialite\"]\n\n    }",
+			"type": "string"
+		},
+		{
+			"key": "jsonSchemaArrMedecins",
+			"value": "{\n        \"type\" : \"array\",\n        \"items\" : {\n            \"type\" : \"object\",\n            \"properties\" : {\n                \"_id\" : {\n                    \"type\": \"string\"\n                },\n                \"nom\" : {\n                    \"type\": \"string\"\n                },\n                \"prenom\" : {\n                    \"type\": \"string\"\n                },\n                \"telephone\" : {\n                    \"type\": \"string\"\n                },\n                \"courriel\" : {\n                    \"type\": \"string\"\n                },\n                \"specialite\" : {\n                    \"type\": \"string\"\n                },\n                \"createdAt\": {\n                    \"type\": \"string\"\n                },\n                \"updatedAt\": {\n                \"type\": \"string\"\n                }     \n            },      \n            \"required\" : [\"_id\", \"nom\", \"prenom\", \"telephone\", \"courriel\", \"specialite\"]\n        }\n    }",
+			"type": "string"
+		},
+		{
+			"key": "jsonSchemaPatient",
+			"value": " {\n        \"type\" : \"object\",\n        \"properties\" : {\n            \"_id\" : {\n                \"type\": \"string\"\n            },\n            \"nom\" : {\n                \"type\": \"string\"\n            },\n            \"dateNaissance\": {\n                \"type\": \"string\"\n            },\n            \"prenom\" : {\n                \"type\": \"string\"\n            },\n            \"telephone\" : {\n                \"type\": \"string\"\n            },\n            \"courriel\" : {\n                \"type\": \"string\"\n            },  \n            \"adresse\" : {\n                \"type\": \"string\"\n            },  \n            \"codePostal\" : {\n                \"type\": \"string\"\n            },\n            \"historique\": {\n                \"type\": \"array\",\n                \"items\": {\n                    \"type\" : \"object\",\n                    \"properties\": {\n                        \"_id\" : {\n                            \"type\": \"string\"\n                        },\n                        \"information\" : {\n                            \"type\": \"string\"\n                        },\n                        \"medecin\" : {\n                            \"type\": \"string\"\n                        },\n                        \"created_at\" : {\n                            \"type\": \"string\"\n                        }\n                    }\n                }\n            },\n            \"createdAt\": {\n                \"type\": \"string\"\n            },\n            \"updatedAt\": {\n            \"type\": \"string\"\n            }            \n        },\n        \"required\" : [\"_id\", \"nom\", \"prenom\", \"dateNaissance\",\"telephone\", \"courriel\", \"adresse\",\"codePostal\", \"historique\"]\n\n    }",
+			"type": "string"
+		},
+		{
+			"key": "jsonSchemaArrPatients",
+			"value": "{\n        \"type\" : \"array\",\n        \"items\" : {\n            \"type\" : \"object\",\n            \"properties\" : {\n                \"_id\" : {\n                    \"type\": \"string\"\n                },\n                \"nom\" : {\n                    \"type\": \"string\"\n                },\n                \"prenom\" : {\n                    \"type\": \"string\"\n                },\n                \"dateNaissance\": {\n                    \"type\": \"string\"\n                },\n                \"telephone\" : {\n                    \"type\": \"string\"\n                },\n                \"courriel\" : {\n                    \"type\": \"string\"\n                },  \n                \"adresse\" : {\n                    \"type\": \"string\"\n                },  \n                \"codePostal\" : {\n                    \"type\": \"string\"\n                },\n                \"historique\": {\n                    \"type\": \"array\",\n                    \"items\": {\n                        \"type\" : \"object\",\n                        \"properties\": {\n                            \"_id\" : {\n                                \"type\": \"string\"\n                            },\n                            \"information\" : {\n                                \"type\": \"string\"\n                            },\n                            \"medecin\" : {\n                                \"type\": \"string\"\n                            },\n                            \"created_at\" : {\n                                \"type\": \"string\"\n                            }\n                        }\n                    }\n                },\n                \"createdAt\": {\n                    \"type\": \"string\"\n                },\n                \"updatedAt\": {\n                \"type\": \"string\"\n                }            \n            },   \n            \"required\" : [\"_id\", \"nom\", \"prenom\", \"telephone\", \"courriel\", \"adresse\",\"codePostal\", \"historique\"]\n        }\n    }",
+			"type": "string"
+		},
+		{
+			"key": "jsonSchemaHistorique",
+			"value": "{\n        \"type\" : \"object\",\n        \"properties\" : {\n            \"information\" : {\n                \"type\": \"string\"\n            },\n            \"medecin\" : {\n                \"type\": \"string\"\n            },\n            \"createdAt\": {\n                \"type\": \"string\"\n            }\n        },\n        \"required\" : [\"_id\", \"information\", \"medecin\"]\n\n    }",
+			"type": "string"
+		},
+		{
+			"key": "jsonSchemaRendezVous",
+			"value": "{\n        \"type\" : \"object\",\n        \"properties\" : {\n            \"_id\": {\n                \"type\": \"string\"\n            },\n            \"patientId\" : {\n                \"type\": \"string\"\n            },\n            \"medecinId\" : {\n                \"type\": \"string\"\n            },\n            \"debut\": {\n                \"type\": \"string\"\n            },\n            \"fin\": {\n                \"type\": \"string\"\n            },\n            \"notes\": {\n                \"type\": \"string\"\n            },\n            \"createdAt\": {\n                \"type\": \"string\"\n            },\n            \"updatedAt\": {\n            \"type\": \"string\"\n            }         \n        },\n        \"required\" : [\"_id\", \"patientId\", \"medecinId\", \"debut\", \"fin\", \"notes\"]\n\n    }",
+			"type": "string"
+		},
+		{
+			"key": "id_last_medecin_created",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "last_medecin_created",
+			"value": ""
+		},
+		{
+			"key": "nb_medecins",
+			"value": "3",
+			"type": "string"
+		},
+		{
+			"key": "nb_medecins_cardiologue",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "id_last_patient_created",
+			"value": ""
+		},
+		{
+			"key": "last_patient_created",
+			"value": ""
+		},
+		{
+			"key": "nb_patients",
+			"value": "3"
+		},
+		{
+			"key": "id_last_historique_created",
+			"value": ""
+		},
+		{
+			"key": "rendez_vous_date_debut",
+			"value": "2023-02-16"
+		},
+		{
+			"key": "rendez_vous_heure_debut",
+			"value": "10:00:00",
+			"type": "string"
+		},
+		{
+			"key": "rendez_vous_heure_debut_conflit",
+			"value": "09:45:00",
+			"type": "string"
+		},
+		{
+			"key": "rendez_vous_date_fin",
+			"value": "2023-02-16",
+			"type": "string"
+		},
+		{
+			"key": "rendez_vous_heure_fin",
+			"value": "10:30:00",
+			"type": "string"
+		},
+		{
+			"key": "rendez_vous_heure_fin_conflit",
+			"value": "10:15:00",
+			"type": "string"
+		},
+		{
+			"key": "duree_rendez_vous",
+			"value": "30",
+			"type": "string"
+		},
+		{
+			"key": "id_last_rendez_vous_created",
+			"value": ""
+		},
+		{
+			"key": "last_rendez_vous_created",
+			"value": ""
+		},
+		{
+			"key": "reset_values",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "bad_id",
+			"value": "63f65e963193f09e1ea4d1ff",
+			"type": "string"
+		},
+		{
+			"key": "jsonSchemaArrRendezVous",
+			"value": "{\n        \"type\" : \"array\",\n        \"items\" : {\n            \"type\" : \"object\",\n            \"properties\" : {\n                \"_id\": {\n                    \"type\": \"string\"\n                },\n                \"patientId\" : {\n                    \"type\": \"string\"\n                },\n                \"medecinId\" : {\n                    \"type\": \"string\"\n                },\n                \"debut\": {\n                    \"type\": \"string\"\n                },\n                \"fin\": {\n                    \"type\": \"string\"\n                },\n                \"notes\": {\n                    \"type\": \"string\"\n                },\n                \"createdAt\": {\n                    \"type\": \"string\"\n                },\n                \"updatedAt\": {\n                \"type\": \"string\"\n                }         \n            },   \n            \"required\" : [\"_id\", \"patientId\", \"medecinId\", \"debut\", \"fin\", \"notes\"]\n        }\n    }",
+			"type": "string"
+		},
+		{
+			"key": "nb_rendez_vous_medecin",
+			"value": "2",
+			"type": "string"
+		},
+		{
+			"key": "nb_rendez_vous_medecin_date",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "nb_rendez_vous_patient",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "nb_rendez_vous_patient_date",
+			"value": "1",
+			"type": "string"
+		}
+	]
+}
