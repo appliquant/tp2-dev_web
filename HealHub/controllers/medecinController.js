@@ -1,5 +1,6 @@
 "use strict";
 
+const veriferChamps = require("../utils/VerifierChamps");
 const Medecin = require("../models/medecin");
 
 /**
@@ -32,6 +33,9 @@ const getMedecin = async (req, res, next) => {
 	try {
 		// Récupération de l'id du médecin
 		const id = req.params.id;
+		if (id === null) {
+			res.status(400).json({ message: "Id du médecin non spécifiée" });
+		}
 
 		// Recherche du médecin
 		const medecin = await Medecin.findById(id);
@@ -51,11 +55,16 @@ const getMedecin = async (req, res, next) => {
 /**
  * Créer un médecin
  */
-
 const postMedecin = async (req, res, next) => {
 	try {
 		// Récupération des données du médecin
 		const { nom, prenom, courriel, telephone, specialite } = req.body;
+
+		// Vérifier si les champs sont vides
+		const verification = veriferChamps(nom, prenom, courriel, telephone, specialite)
+		if (verification === true) {
+			res.status(400).json({ message: "Champs manquants" });
+		}
 
 		// Création du médecin
 		let medecin = new Medecin({
@@ -66,14 +75,13 @@ const postMedecin = async (req, res, next) => {
 			specialite: specialite
 		});
 
-		// Sauvegarde du médecin
+		// Sauvegarder le médecin
 		medecin = await medecin.save();
 
-		// Uri du médecin
 		// Location medecion
 		const location = `/medecins/${medecin._id}`
 
-		// Réponse medecin et uri
+		// Renvoyer medecin
 		res.set("Location", location)
 		res.status(201).json(medecin);
 
@@ -91,10 +99,14 @@ const putMedecin = async (req, res, next) => {
 		const id = req.params.id;
 		const { nom, prenom, courriel, telephone, specialite } = req.body;
 
+		// Vérifier si les champs sont vides
+		const verification = veriferChamps(nom, prenom, courriel, telephone, specialite)
+		if (verification === true || id === null) {
+			res.status(400).json({ message: "Champs manquants" });
+		}
+
 		// Chercher le médecin
 		let medecin = await Medecin.findById(id);
-
-		// Médecin trouvé
 		if (medecin === null) {
 			res.status(404).json({ message: "Médecin non trouvé" });
 		}
@@ -123,6 +135,9 @@ const deleteMedecin = async (req, res, next) => {
 	try {
 		// Récupération de l'id du médecin
 		const id = req.params.id;
+		if (id === null) {
+			res.status(400).json({ message: "Id du médecin non spécifiée" });
+		}
 
 		// Recherche du médecin
 		const medecin = await Medecin.findById(id);

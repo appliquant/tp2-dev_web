@@ -10,7 +10,7 @@ const historiqueSchema = new Schema(
 			required: true
 		},
 
-		create_at: {
+		created_at: {
 			type: Date,
 			required: true,
 			default: Date.now
@@ -62,7 +62,7 @@ const patientSchema = new Schema({
 	},
 
 	historique: [
-		historiqueSchema
+		historiqueSchema,
 	],
 
 }, {
