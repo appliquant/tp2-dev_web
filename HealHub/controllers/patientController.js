@@ -29,6 +29,7 @@ const getPatient = async (req, res, next) => {
 		const id = req.params.id;
 		if (id === null) {
 			res.status(400).json({ message: "Id du patient non spécifiée" });
+			return;
 		}
 
 		// Recherche du patient
@@ -37,8 +38,10 @@ const getPatient = async (req, res, next) => {
 		// Patient trouvé
 		if (patient === null) {
 			res.status(404).json({ message: "Patient non trouvé" });
+			return;
 		} else {
 			res.status(200).json(patient);
+			return;
 		}
 
 	} catch (err) {
@@ -58,6 +61,7 @@ const postPatient = async (req, res, next) => {
 		const verification = veriferChamps(nom, prenom, dateNaissance, courriel, telephone, adresse, codePostal)
 		if (verification === true) {
 			res.status(400).json({ message: "Champs manquants" });
+			return;
 		}
 
 		// Création du patient
@@ -100,12 +104,14 @@ const putPatient = async (req, res, next) => {
 		const verification = veriferChamps(nom, prenom, dateNaissance, courriel, telephone, adresse, codePostal)
 		if (verification === true || id === null) {
 			res.status(400).json({ message: "Champs manquants" });
+			return;
 		}
 
 		// Chercher le patient
 		let patient = await Patient.findById(id);
 		if (patient === null) {
 			res.status(404).json({ message: "Patient non trouvé" });
+			return;
 		}
 
 		// Modifier le patient
@@ -139,12 +145,14 @@ const postPatientHistorique = async (req, res, next) => {
 		const verification = veriferChamps(medecinId, information);
 		if (verification === true || id === null) {
 			res.status(400).json({ message: "Champs manquants" });
+			return;
 		}
 
 		// Chercher le patient
 		let patient = await Patient.findById(id);
 		if (patient === null) {
 			res.status(404).json({ message: "Patient non trouvé" });
+			return;
 		}
 
 		// Ajouter l'historique
@@ -168,12 +176,82 @@ const postPatientHistorique = async (req, res, next) => {
 	}
 }
 
+/**
+ * Supprimer un élement de l'historique d'un patient
+ */
+const deletePatientHistorique = async (req, res, next) => {
+	try {
+		// Récupération des données du patient
+		const id = req.params.id;
+		const idHistorique = req.params.idHistorique;
+
+		// Vérifier si les champs sont vides
+		const verification = veriferChamps(id, idHistorique);
+		if (verification === true) {
+			res.status(400).json({ message: "Champs manquants" });
+			return;
+		}
+
+		// Chercher le patient
+		const patient = await Patient.findById(id);
+		if (patient === null) {
+			res.status(404).json({ message: "Patient non trouvé" });
+			return;
+		}
+
+		// Supprimer l'historique
+		await patient.historique.id(idHistorique).remove();
+		await patient.save();
+
+		// Reponse
+		res.status(204).json({ message: "Historique supprimé" });
+
+	} catch (err) {
+		next(err);
+	}
+}
+
+/**
+ * Supprimer un patient
+ */
+const deletePatient = async (req, res, next) => {
+	try {
+		// Récupération des données du patient
+		const id = req.params.id;
+
+		// Vérifier si les champs sont vides
+		const verification = veriferChamps(id);
+		if (verification === true) {
+			res.status(400).json({ message: "Champs manquants" });
+			return;
+		}
+
+		// Chercher le patient
+		const patient = await Patient.findById(id);
+		if (patient === null) {
+			res.status(404).json({ message: "Patient non trouvé" });
+			return;
+		}
+
+		// Supprimer le patient
+		await patient.remove();
+
+		// Reponse
+		res.status(204).json({ message: "Patient supprimé" });
+	}
+	catch (err) {
+		next(err);
+	}
+}
+
 module.exports = {
 	getPatients,
 	getPatient,
 	postPatient,
 	putPatient,
-	postPatientHistorique
+	postPatientHistorique,
+	deletePatientHistorique,
+	deletePatient
 };
 
 

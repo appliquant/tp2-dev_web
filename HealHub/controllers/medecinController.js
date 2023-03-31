@@ -35,6 +35,7 @@ const getMedecin = async (req, res, next) => {
 		const id = req.params.id;
 		if (id === null) {
 			res.status(400).json({ message: "Id du médecin non spécifiée" });
+			return;
 		}
 
 		// Recherche du médecin
@@ -43,8 +44,10 @@ const getMedecin = async (req, res, next) => {
 		// Médecin trouvé
 		if (medecin === null) {
 			res.status(404).json({ message: "Médecin non trouvé" });
+			return;
 		} else {
 			res.status(200).json(medecin);
+			return;
 		}
 
 	} catch (err) {
@@ -64,6 +67,7 @@ const postMedecin = async (req, res, next) => {
 		const verification = veriferChamps(nom, prenom, courriel, telephone, specialite)
 		if (verification === true) {
 			res.status(400).json({ message: "Champs manquants" });
+			return;
 		}
 
 		// Création du médecin
@@ -103,12 +107,14 @@ const putMedecin = async (req, res, next) => {
 		const verification = veriferChamps(nom, prenom, courriel, telephone, specialite)
 		if (verification === true || id === null) {
 			res.status(400).json({ message: "Champs manquants" });
+			return;
 		}
 
 		// Chercher le médecin
 		let medecin = await Medecin.findById(id);
 		if (medecin === null) {
 			res.status(404).json({ message: "Médecin non trouvé" });
+			return;
 		}
 
 		// Modifier les données du médecin
@@ -145,6 +151,7 @@ const deleteMedecin = async (req, res, next) => {
 		// Médecin trouvé
 		if (medecin === null) {
 			res.status(404).json({ message: "Médecin non trouvé" });
+			return;
 		}
 
 		// Supprimer médecin
