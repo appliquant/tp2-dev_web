@@ -2,7 +2,7 @@
 
 const express = require("express");
 
-const seedController = require("../controllers/dbController");
+const seedController = require("../controllers/db.controller");
 
 const router = express.Router();
 

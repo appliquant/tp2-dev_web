@@ -2,7 +2,7 @@
 
 const express = require("express");
 
-const medecinController = require("../controllers/medecinController");
+const medecinController = require("../controllers/medecin.controller");
 
 const router = express.Router();
 

@@ -4,8 +4,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
-const medecinRoutes = require("./routes/medecin");
-const patientRoutes = require("./routes/patient");
+const medecinRoutes = require("./routes/medecin.route");
+const patientRoutes = require("./routes/patient.route");
 const rdvRoutes = require("./routes/rdv.route");
 const seed = require("./routes/db");
 
@@ -52,8 +52,7 @@ app.use((error, req, res, next) => {
 // Connexion à la base de données
 mongoose.set("strictQuery", true);
 mongoose
-	// .connect("mongodb://127.0.0.1:27017/HealHub")
-	.connect("mongodb+srv://psss:CVgF5NE1bbRmqxix@cluster-tp2-devweb.w4nl6ax.mongodb.net/test")
+	.connect("mongodb://127.0.0.1:27017/HealHub")
 	.then(() => {
 		app.listen(port);
 		console.log("Serveur à l'écoute sur : http://localhost:" + port);
