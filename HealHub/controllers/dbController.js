@@ -2,7 +2,7 @@
 
 const Patient = require("../models/patient");
 const Medecin = require("../models/medecin");
-const RendezVous =  require("../models/rendezvous");
+const RendezVous = require("../models/rendezvous");
 
 const medecins = require("../seeds/medecins");
 const patients = require("../seeds/patients");
@@ -11,93 +11,38 @@ const rendezVous = require("../seeds/rendezVous");
 
 let result = {};
 
-exports.seed = (req, res, next) =>{
+/**
+ * Remplir la base de données avec des données de test
+ */
+const seed = async (req, res, next) => {
+	try {
+		///////// Créer les médecins ///////// 
+		await Medecin.deleteMany();
+		console.log("Médecins supprimés");
+		await Medecin.insertMany(medecins);
 
-	Medecin.deleteMany()
-		.then(() => {
-			console.log("Médecins supprimés");
-		})
-		.then(()=>{
+		///////// Créer les patients /////////
+		await Patient.deleteMany();
+		console.log("Patients supprimés");
+		const nvpatients = await Patient.insertMany(patients);
+		result.patients = nvpatients;
 
-			Medecin.insertMany(medecins)
-				.then(medecins =>{
+		///////// Créer les rendez-vous /////////
+		await RendezVous.deleteMany();
 
-					if(medecins.length > 0){
-						result.medecins = medecins;
-					}
-			
+		console.log("Rendez-vous supprimés");
+		const rdv = await RendezVous.insertMany(rendezVous);
+		result.rendezVous = rdv;
 
-				}).catch(err => {
-					if(!err.statusCode){
-						err.statusCode = 500;
-					}
-					next(err);
-				});
+		res.status(200).json(result);
+	} catch (err) {
+		if (!err.statusCode) {
+			err.statusCode = 500;
+		}
+		next(err);
+	}
+}
 
-		})
-		.catch(err => {
-			if(!err.statusCode){
-				err.statusCode = 500;
-			}
-			next(err);
-		});
- 
-	Patient.deleteMany()
-		.then(() => {
-			console.log("Patients supprimés");
-		})
-		.then(()=>{
-			Patient.insertMany(patients)
-				.then(patients =>{
-
-					if(patients.length > 0){
-						result.patients = patients;
-						
-					}
-			
-
-				}).catch(err => {
-					if(!err.statusCode){
-						err.statusCode = 500;
-					}
-					next(err);
-				});
-		})
-		.catch(err => {
-			if(!err.statusCode){
-				err.statusCode = 500;
-			}
-			next(err);
-		});
-
-	RendezVous.deleteMany()
-		.then(() => {
-			console.log("Rendez-vous supprimés");
-		})
-		.then(()=>{
-			RendezVous.insertMany(rendezVous)
-				.then(rendezVous =>{
-
-					if(rendezVous.length > 0){
-						result.rendezVous = rendezVous;
-					
-					}
-			
-
-				}).catch(err => {
-					if(!err.statusCode){
-						err.statusCode = 500;
-					}
-					next(err);
-				});
-		})
-		.catch(err => {
-			if(!err.statusCode){
-				err.statusCode = 500;
-			}
-			next(err);
-		});	
-
-	res.status(200).json(result);
-	
-};
+module.exports = {
+	seed
+}
