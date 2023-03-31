@@ -25,6 +25,33 @@ const getMedecins = async (req, res, next) => {
 	}
 }
 
+/**
+ * Récupérer un médecin en particulier
+ */
+const getMedecin = async (req, res, next) => {
+	try {
+		// Récupération de l'id du médecin
+		const id = req.params.id;
+
+		// Recherche du médecin
+		const medecin = await Medecin.findById(id);
+
+		// Médecin trouvé
+		if (medecin === null) {
+			res.status(404).json({ message: "Médecin non trouvé" });
+		} else {
+			res.status(200).json(medecin);
+		}
+
+	} catch (err) {
+		next(err);
+	}
+}
+
+/**
+ * Créer un médecin
+ */
+
 const postMedecin = async (req, res, next) => {
 	try {
 		// Récupération des données du médecin
@@ -43,17 +70,82 @@ const postMedecin = async (req, res, next) => {
 		medecin = await medecin.save();
 
 		// Uri du médecin
-		const uri = req.protocol + "://" + req.get("host") + req.originalUrl + "/" + medecin._id;
+		// Location medecion
+		const location = `/medecins/${medecin._id}`
 
-		// Réponse
-		res.status(201).json({ body: medecin, location: uri })
+		// Réponse medecin et uri
+		res.set("Location", location)
+		res.status(201).json(medecin);
 
 	} catch (err) {
 		next(err);
 	}
 }
 
+/**
+ * Modifier un médecin
+ */
+const putMedecin = async (req, res, next) => {
+	try {
+		// Récupération nouvelle données du médecin
+		const id = req.params.id;
+		const { nom, prenom, courriel, telephone, specialite } = req.body;
+
+		// Chercher le médecin
+		let medecin = await Medecin.findById(id);
+
+		// Médecin trouvé
+		if (medecin === null) {
+			res.status(404).json({ message: "Médecin non trouvé" });
+		}
+
+		// Modifier les données du médecin
+		medecin.nom = nom;
+		medecin.prenom = prenom;
+		medecin.courriel = courriel;
+		medecin.telephone = telephone;
+		medecin.specialite = specialite;
+
+		// Sauvegarde du médecin
+		medecin = await medecin.save();
+
+		// Réponse medecin
+		res.status(200).json(medecin);
+	} catch (err) {
+		next(err);
+	}
+}
+
+/**
+ * Supprimer un médecin
+ */
+const deleteMedecin = async (req, res, next) => {
+	try {
+		// Récupération de l'id du médecin
+		const id = req.params.id;
+
+		// Recherche du médecin
+		const medecin = await Medecin.findById(id);
+
+		// Médecin trouvé
+		if (medecin === null) {
+			res.status(404).json({ message: "Médecin non trouvé" });
+		}
+
+		// Supprimer médecin
+		medecin.deleteOne();
+
+		// Réponse medecin
+		res.status(204).json();
+	} catch (err) {
+		next(err)
+	}
+}
+
 module.exports = {
 	getMedecins,
-	postMedecin
+	getMedecin,
+	postMedecin,
+	putMedecin,
+	deleteMedecin
 }
