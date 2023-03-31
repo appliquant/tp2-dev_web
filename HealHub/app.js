@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 
 const medecinRoutes = require("./routes/medecin");
 const patientRoutes = require("./routes/patient");
+const rdvRoutes = require("./routes/rdv.route");
 const seed = require("./routes/db");
 
 const app = express();
@@ -37,6 +38,7 @@ app.use((req, res, next) => {
 // Routes de l'application
 app.use(medecinRoutes);
 app.use(patientRoutes);
+app.use(rdvRoutes);
 app.use(seed);
 
 // Gestion des erreurs

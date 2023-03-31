@@ -1,9 +1,7 @@
 "use strict";
 
 const express = require("express");
-
 const patientController = require("../controllers/patientController");
-
 const router = express.Router();
 
 // GET /patients (récupérer la liste des patients)

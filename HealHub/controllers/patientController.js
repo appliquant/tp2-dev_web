@@ -39,10 +39,11 @@ const getPatient = async (req, res, next) => {
 		if (patient === null) {
 			res.status(404).json({ message: "Patient non trouvé" });
 			return;
-		} else {
-			res.status(200).json(patient);
-			return;
 		}
+
+		// Renvoi du patient
+		res.status(200).json(patient);
+		return;
 
 	} catch (err) {
 		next(err);

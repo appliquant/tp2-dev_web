@@ -9,17 +9,19 @@ const patients = require("../seeds/patients");
 const rendezVous = require("../seeds/rendezVous");
 
 
-let result = {};
 
 /**
  * Remplir la base de données avec des données de test
  */
 const seed = async (req, res, next) => {
 	try {
+		let result = {};
+
 		///////// Créer les médecins ///////// 
 		await Medecin.deleteMany();
 		console.log("Médecins supprimés");
-		await Medecin.insertMany(medecins);
+		const nvMedecins = await Medecin.insertMany(medecins);
+		result.medecins = nvMedecins;
 
 		///////// Créer les patients /////////
 		await Patient.deleteMany();
@@ -29,7 +31,6 @@ const seed = async (req, res, next) => {
 
 		///////// Créer les rendez-vous /////////
 		await RendezVous.deleteMany();
-
 		console.log("Rendez-vous supprimés");
 		const rdv = await RendezVous.insertMany(rendezVous);
 		result.rendezVous = rdv;

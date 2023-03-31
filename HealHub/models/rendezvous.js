@@ -2,7 +2,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-
 const rendezVousSchema = new Schema({
 	patientId: {
 		type: mongoose.Types.ObjectId,
